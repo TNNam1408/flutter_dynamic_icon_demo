@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:async';
+import 'dart:developer';
 
 import 'package:dynamic_icon_method_flutter_0604/services.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +34,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Timer? _debounce;
+
+  bool enableLauncher = false;
+
   void fetchDataFromNative(String counter) async {
     try {
-      final String result =
-          await platformChannel.invokeMethod('getDataFromNative$counter');
-      print('Result from Native: $result');
+      if (_debounce?.isActive ?? false) _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 500), () async {
+        final String result =
+            await platformChannel.invokeMethod('getDataFromNative$counter');
+        log('Result from Native: $result');
+      });
     } on PlatformException catch (e) {
-      print('Error: ${e.message}');
+      log('Error: ${e.message}');
     }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -51,32 +65,63 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Flutter Demo Method Channel'),
       ),
       body: Center(
-        child: GridView.count(
-          crossAxisCount: 2,
+        child: Column(
           children: [
-            SampleButton(
-              text: "Sample Button Original",
-              onPressed: () {
-                fetchDataFromNative("Original");
-              },
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                children: [
+                  SampleButton(
+                    text: "Sample Button Original",
+                    onPressed: () {
+                      fetchDataFromNative("Original");
+                    },
+                  ),
+                  SampleButton(
+                    text: "Sample Button Red",
+                    onPressed: () {
+                      fetchDataFromNative("Red");
+                    },
+                  ),
+                  SampleButton(
+                    text: "Sample Button Green",
+                    onPressed: () {
+                      fetchDataFromNative("Green");
+                    },
+                  ),
+                  SampleButton(
+                    text: "Sample Button Blue",
+                    onPressed: () {
+                      fetchDataFromNative("Blue");
+                    },
+                  ),
+                ],
+              ),
             ),
-            SampleButton(
-              text: "Sample Button Red",
-              onPressed: () {
-                fetchDataFromNative("Red");
-              },
+            const SizedBox(
+              height: 32,
             ),
-            SampleButton(
-              text: "Sample Button Green",
-              onPressed: () {
-                fetchDataFromNative("Green");
+            InkWell(
+              onTap: () {
+                setState(() {
+                  enableLauncher = !enableLauncher;
+                  if (enableLauncher) {
+                    platformChannel.invokeMethod('enableDynamicIcon');
+                  } else {
+                    platformChannel.invokeMethod('disableDynamicIcon');
+                  }
+                });
               },
-            ),
-            SampleButton(
-              text: "Sample Button Blue",
-              onPressed: () {
-                fetchDataFromNative("Blue");
-              },
+              child: Container(
+                width: double.infinity,
+                height: 56,
+                color: enableLauncher ? Colors.amber : Colors.grey,
+                child: Text(
+                  enableLauncher
+                      ? "Disable Dynamic Icon"
+                      : "Enable Dynamic Icon",
+                ),
+              ),
             ),
           ],
         ),
@@ -100,14 +145,14 @@ class SampleButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.blue,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),

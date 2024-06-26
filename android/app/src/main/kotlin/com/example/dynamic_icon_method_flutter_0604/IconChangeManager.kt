@@ -183,7 +183,9 @@ internal class IconChangeManager(private val activity: Activity) {
     }
 
     companion object {
-        private val META_DATA_KEY_ALIAS_TITLE: String = "com.example.dynamic_icon_method_flutter_0604.ALIAS_TITLE"
-        private val EXTRA_REFRESHING: String = "com.example.dynamic_icon_method_flutter_0604.EXTRA_REFRESHING"
+        private val META_DATA_KEY_ALIAS_TITLE: String =
+            "com.example.dynamic_icon_method_flutter_0604.ALIAS_TITLE"
+        private val EXTRA_REFRESHING: String =
+            "com.example.dynamic_icon_method_flutter_0604.EXTRA_REFRESHING"
     }
 }
