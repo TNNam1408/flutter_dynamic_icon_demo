@@ -7,6 +7,7 @@ import android.net.Uri
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
+
 /**
  * Implementation of App Widget functionality.
  */
@@ -23,12 +24,12 @@ class Widget : HomeWidgetProvider() {
                     HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java)
                 HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java)
                 setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
-                val pendingIntentWithData =
-                    HomeWidgetLaunchIntent.getActivity(
-                        context,
-                        MainActivity::class.java,
-                        Uri.parse("homeWidgetExample://message?message=NamTN"))
-                setOnClickPendingIntent(R.id.appwidget_text, pendingIntentWithData)
+//                val pendingIntentWithData =
+//                    HomeWidgetLaunchIntent.getActivity(
+//                        context,
+//                        MainActivity::class.java,
+//                        Uri.parse("homeWidgetExample://message?message=NamTN"))
+//                setOnClickPendingIntent(R.id.appwidget_text, pendingIntentWithData)
             }
             appWidgetManager.updateAppWidget(widgetId, views)
         }
