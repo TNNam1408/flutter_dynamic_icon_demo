@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_dynamic_icon: #Dynamic app icon
     path: ./packages/flutter_dynamic_icon
+  home_widget: ^0.7.0
 
 dev_dependencies:
   flutter_test:
